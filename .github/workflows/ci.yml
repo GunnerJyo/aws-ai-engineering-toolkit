@@ -19,4 +19,5 @@ jobs:
       - run: ruff check .
       - run: ruff format --check .
       - run: python -m pytest
+      - run: python scripts/validate_yaml.py
       - run: python -m build

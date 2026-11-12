@@ -7,6 +7,7 @@ An independent community Python toolkit with small, reusable building blocks for
 - Bedrock Runtime client factory and structured Converse responses.
 - Titan Text Embeddings V2 adapter, configurable chunking, cosine search, and an in-memory RAG retriever.
 - Independent Bedrock Guardrails `ApplyGuardrail` input/output evaluation.
+- Botocore Stubber contract tests, Titan payload validation, and a small deterministic Recall@K regression set.
 - Optional Strands Agents custom-tool example.
 - Minimal Lambda handler and AWS SAM deployment example.
 - Offline unit tests; the default suite never calls AWS.
@@ -67,16 +68,25 @@ The RAG example calls Titan V2 for each chunk and query. Its in-memory vector st
 
 The Lambda example lives at `examples/lambda/app.py`; SAM instructions are in [infrastructure/sam/README.md](infrastructure/sam/README.md). No cloud infrastructure is deployed by this project.
 
-## Tests and development
+## Tests, contracts, and retrieval evaluation
 
 ```bash
 python -m pytest
 ruff check .
 ruff format --check .
+python -m compileall -q src examples tests
+python -m pytest --collect-only -q
+python scripts/validate_yaml.py
 python -m build
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the full contributor workflow. The roadmap is to add persistent store adapters and further offline-tested examples. Current limitations: in-memory storage only; no streaming Converse abstraction; no production SLA or security certification; cloud model availability and charges vary by account and region.
+The default tests are offline. Botocore `Stubber` checks modeled Bedrock request and response contracts without network calls; Titan's serialized JSON request and opaque response body are validated separately. The fixed-vector RAG sample reports Recall@K as a regression check for ranking mechanics. Its four hand-authored documents and three questions are synthetic and do not establish retrieval quality for real corpora.
+
+Optional live checks are skipped by default and can call paid services. Review [tests/integration/README.md](tests/integration/README.md) before opting in. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full contributor workflow. Limitations include in-memory-only storage, no streaming Converse abstraction, and no full multimodal request or tool orchestration support. This project has no production SLA or security certification; model access, latency, and charges vary by account and region.
+
+## Scope and failure behavior
+
+The toolkit packages common request construction, validation, response normalization, retry/timeout defaults, test seams, and examples around boto3. `converse` sends a single text prompt, extracts text for existing callers, and preserves all response content blocks. It does not execute model tool-use requests or accept image/audio input. Guardrails checks are independent of model calls: use `INPUT` before processing user text and `OUTPUT` before returning generated text. If evaluation errors or returns an unknown action, the helper raises; applications should fail closed and must not continue with unverified content.
 
 ## Security, support, and license
 

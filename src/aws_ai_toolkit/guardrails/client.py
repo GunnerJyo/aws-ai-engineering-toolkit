@@ -5,7 +5,7 @@ from typing import Any, Literal
 
 from botocore.exceptions import BotoCoreError, ClientError
 
-from aws_ai_toolkit.bedrock.exceptions import BedrockRequestError
+from aws_ai_toolkit.bedrock.exceptions import translate_bedrock_error
 
 GuardrailSource = Literal["INPUT", "OUTPUT"]
 
@@ -25,7 +25,13 @@ class GuardrailResult:
 def apply_guardrail(
     client: Any, guardrail_id: str, version: str, text: str, *, source: GuardrailSource = "INPUT"
 ) -> GuardrailResult:
-    """Evaluate text independently of any model request and preserve assessments."""
+    """Evaluate text independently and preserve assessments.
+
+    INPUT is intended for user-provided content before model processing;
+    OUTPUT is intended for generated content before it is returned. If the
+    evaluation request fails or its action is unrecognized, this raises and
+    callers must not continue with unverified content.
+    """
     if not guardrail_id.strip() or not version.strip() or not text.strip():
         raise ValueError("guardrail_id, version, and text must not be empty")
     if source not in ("INPUT", "OUTPUT"):
@@ -38,7 +44,7 @@ def apply_guardrail(
             content=[{"text": {"text": text}}],
         )
     except (ClientError, BotoCoreError) as exc:
-        raise BedrockRequestError("Amazon Bedrock ApplyGuardrail request failed") from exc
+        raise translate_bedrock_error(exc, "ApplyGuardrail") from exc
     action = response.get("action")
     if action not in ("NONE", "GUARDRAIL_INTERVENED"):
         raise ValueError("ApplyGuardrail response is missing a recognized action")

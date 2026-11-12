@@ -7,11 +7,20 @@ from dataclasses import dataclass
 from .chunking import Document
 
 
+def _is_finite_number(value: object) -> bool:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return False
+    try:
+        return math.isfinite(value)
+    except OverflowError:
+        return False
+
+
 def cosine_similarity(left: Sequence[float], right: Sequence[float]) -> float:
     """Return cosine similarity, rejecting invalid dimensions and zero vectors."""
     if not left or len(left) != len(right):
         raise ValueError("vectors must have the same non-zero dimension")
-    if any(not math.isfinite(v) for v in (*left, *right)):
+    if any(not _is_finite_number(v) for v in (*left, *right)):
         raise ValueError("vectors must contain only finite values")
     denominator = math.sqrt(sum(v * v for v in left) * sum(v * v for v in right))
     if denominator == 0:
@@ -26,7 +35,11 @@ class SearchResult:
 
 
 class InMemoryVectorStore:
-    """In-memory store for demonstrations and tests; contents are not persistent."""
+    """In-memory cosine store; ties retain document insertion order.
+
+    Contents are not persistent. Python's stable sorting means equal scores
+    retain the order in which documents were added.
+    """
 
     def __init__(self) -> None:
         self._items: list[tuple[tuple[float, ...], Document]] = []
@@ -34,7 +47,7 @@ class InMemoryVectorStore:
 
     def add(self, document: Document, vector: Sequence[float]) -> None:
         """Add a document and its embedding after validating dimension and values."""
-        if not vector or any(not math.isfinite(value) for value in vector):
+        if not vector or any(not _is_finite_number(value) for value in vector):
             raise ValueError("vector must be non-empty and finite")
         if self._dimension is not None and self._dimension != len(vector):
             raise ValueError("vector dimension mismatch")
@@ -42,7 +55,7 @@ class InMemoryVectorStore:
         self._items.append((tuple(float(v) for v in vector), document))
 
     def search(self, query: Sequence[float], *, top_k: int = 3) -> list[SearchResult]:
-        """Return up to top_k results in descending similarity order."""
+        """Return top_k results by descending score, breaking ties by insertion order."""
         if top_k < 1:
             raise ValueError("top_k must be at least 1")
         if not self._items:

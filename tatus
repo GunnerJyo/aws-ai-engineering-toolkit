@@ -1,0 +1,33 @@
+warning: in the working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/bedrock.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/guardrails.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/rag.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'pyproject.toml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/aws_ai_toolkit/bedrock/__init__.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/aws_ai_toolkit/bedrock/client.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/aws_ai_toolkit/bedrock/converse.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/aws_ai_toolkit/bedrock/exceptions.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/aws_ai_toolkit/config.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/aws_ai_toolkit/guardrails/client.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/aws_ai_toolkit/rag/__init__.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/aws_ai_toolkit/rag/embeddings.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/aws_ai_toolkit/rag/vector_store.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/integration/README.md', LF will be replaced by CRLF the next time Git touches it
+ .github/workflows/ci.yml                 |  1 [32m+[m
+ README.md                                | 14 [32m+++++++++[m[31m--[m
+ docs/bedrock.md                          |  6 [32m++++[m[31m-[m
+ docs/guardrails.md                       |  2 [32m+[m[31m-[m
+ docs/rag.md                              |  4 [32m+++[m[31m-[m
+ pyproject.toml                           |  3 [32m++[m[31m-[m
+ src/aws_ai_toolkit/bedrock/__init__.py   | 11 [32m+++++++[m[31m--[m
+ src/aws_ai_toolkit/bedrock/client.py     |  9 [32m+++++[m[31m--[m
+ src/aws_ai_toolkit/bedrock/converse.py   | 25 [32m+++++++++++++++[m[31m-----[m
+ src/aws_ai_toolkit/bedrock/exceptions.py | 36 [32m+++++++++++++++++++++++++++[m[31m-[m
+ src/aws_ai_toolkit/config.py             | 28 [32m++++++++++++++++++++[m[31m--[m
+ src/aws_ai_toolkit/guardrails/client.py  | 12 [32m+++++++[m[31m---[m
+ src/aws_ai_toolkit/rag/__init__.py       |  3 [32m++[m[31m-[m
+ src/aws_ai_toolkit/rag/embeddings.py     | 40 [32m+++++++++++++++++++++++++[m[31m-------[m
+ src/aws_ai_toolkit/rag/vector_store.py   | 21 [32m+++++++++++++[m[31m----[m
+ tests/integration/README.md              | 28 [32m++++++++++++++++++++[m[31m--[m
+ 16 files changed, 206 insertions(+), 37 deletions(-)
