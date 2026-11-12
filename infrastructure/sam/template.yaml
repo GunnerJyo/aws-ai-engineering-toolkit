@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Minimal API Gateway and Lambda Bedrock Converse example.
+Parameters:
+  BedrockModelArn:
+    Type: String
+    Description: Exact foundation model or inference profile ARN to allow.
+  BedrockModelId:
+    Type: String
+    Description: Model ID or inference profile ID used by the runtime request.
+Resources:
+  PromptFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../../examples/lambda/
+      Handler: app.handler
+      Runtime: python3.12
+      Timeout: 30
+      MemorySize: 256
+      Environment:
+        Variables:
+          BEDROCK_MODEL_ID: !Ref BedrockModelId
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action: bedrock:InvokeModel
+              Resource: !Ref BedrockModelArn
+      Events:
+        Prompt:
+          Type: Api
+          Properties:
+            Path: /prompt
+            Method: post
+Outputs:
+  ApiUrl:
+    Description: API endpoint
+    Value: !Sub https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/prompt

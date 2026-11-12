@@ -1,0 +1,3 @@
+# Bedrock Converse
+
+Create a client using `create_bedrock_runtime_client(ToolkitConfig(region_name="us-east-1"))`, then call `converse(client, model_id, prompt, system=..., temperature=..., max_tokens=...)`. The result exposes `text`, `stop_reason`, `usage`, and raw response. The helper sends one user message and reads text output blocks. Grant `bedrock:InvokeModel` on the selected model/inference-profile resource and ensure model access is available in the account and region. Calls can incur charges. Converse request fields follow the [AWS Converse API guide](https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference.html).
